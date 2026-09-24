@@ -149,3 +149,6 @@ Follow these steps to test the full workflow:
 9. Delete a Habit: Click the Delete button on a habit card, confirm the deletion in the modal dialog, and verify the habit is removed.
 10. Logout: Click the Logout button in the sidebar or profile section to end session and return to the login screen.
 
+
+
+### Note: The optional reminder or scheduled notification feature was not implemented.
