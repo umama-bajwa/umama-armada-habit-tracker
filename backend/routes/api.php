@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HabitController;
+use App\Http\Controllers\HabitLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -17,4 +18,6 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/habits/{id}', [HabitController::class, 'update']);
     Route::patch('/habits/{id}', [HabitController::class, 'update']);
     Route::delete('/habits/{id}', [HabitController::class, 'destroy']);
+    Route::post('/habits/{id}/complete', [HabitLogController::class, 'complete']);
+    Route::post('/habits/{id}/incomplete', [HabitLogController::class, 'incomplete']);
 });

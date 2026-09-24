@@ -12,26 +12,36 @@ class HabitController extends Controller
      * Display a listing of the authenticated user's habits.
      */
     public function index(Request $request)
-    {
-        $user = auth('api')->user();
+{
+    $date = $request->query('date', now()->toDateString());
 
-        $query = $user->habits()->latest();
+    $query = Habit::where('user_id', auth()->id())
+        ->with([
+            'logs' => function ($query) use ($date) {
+                $query->whereDate('date', $date);
+            }
+        ]);
 
-        $status = strtolower(trim((string) $request->query('status')));
-
-        if ($status === 'active') {
+    if ($request->has('status')) {
+        if ($request->status === 'active') {
             $query->where('is_active', true);
-        } elseif ($status === 'inactive') {
+        } elseif ($request->status === 'inactive') {
             $query->where('is_active', false);
         }
-        // status 'all' or unspecified defaults to returning all habits
-
-        $habits = $query->get();
-
-        return response()->json([
-            'habits' => $habits,
-        ]);
     }
+
+    $habits = $query->latest()->get();
+
+    $habits->each(function ($habit) {
+        $habit->completed = $habit->logs->first()?->completed ?? false;
+        unset($habit->logs);
+    });
+
+    return response()->json([
+        'date' => $date,
+        'habits' => $habits,
+    ]);
+}
 
     /**
      * Store a newly created habit for the authenticated user.
